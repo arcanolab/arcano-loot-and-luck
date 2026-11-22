@@ -1,0 +1,2135 @@
+/* Arcano Loot & Luck (Arcano Lab) — janela do sorteio, janela do pool, chat e assinatura */
+.agacha,
+.agacha-chat {
+  --ag-roxo: #7b55d6;
+  --ag-roxo-claro: #a98bf0;
+  --ag-ouro: #d9b45a;
+  --ag-ouro-claro: #f5dc9a;
+  --ag-fundo: #1d1a24;
+  --ag-noite: #120e1d;
+}
+
+/* Cor de cada raridade: quem usa lê --rar */
+.rar-common    { --rar: #a8a8b3; }
+.rar-uncommon  { --rar: #3fd26b; }
+.rar-rare      { --rar: #4a9bff; }
+.rar-veryRare  { --rar: #b061f2; }
+.rar-legendary { --rar: #ff9326; }
+.rar-artifact  { --rar: #f2d98a; }
+
+/* ---------- Ícone próprio (cartas com estrela) ---------- */
+.agacha-icone {
+  display: inline-block;
+  width: 1.25em;
+  height: 1.25em;
+  vertical-align: -0.25em;
+  background-color: currentColor;
+  -webkit-mask: url("../assets/gacha.svg") center / contain no-repeat;
+  mask: url("../assets/gacha.svg") center / contain no-repeat;
+}
+
+/* ==================================================================
+   Janela do sorteio
+   ================================================================== */
+.agacha-sorteio .window-content {
+  padding: 0;
+  overflow: hidden;
+  color: #e9e4f5;
+  background:
+    radial-gradient(ellipse at 50% 38%, rgba(123, 85, 214, 0.32), transparent 62%),
+    linear-gradient(180deg, #1a1430 0%, var(--ag-noite) 100%);
+}
+.agacha-sorteio .agacha-corpo {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* ---------- Botões ---------- */
+.agacha-sorteio .agacha-botao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: auto;
+  height: 34px;
+  padding: 0 14px;
+  border-radius: 6px;
+  border: 1px solid rgba(217, 180, 90, 0.7);
+  font-weight: 700;
+  font-size: 13px;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: var(--cursor-pointer, pointer);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+}
+.agacha-sorteio .agacha-botao:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.agacha-sorteio .agacha-sortear {
+  background: linear-gradient(135deg, #4b2fa0 0%, var(--ag-roxo) 100%);
+  color: var(--ag-ouro-claro);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+  box-shadow: 0 2px 10px rgba(123, 85, 214, 0.45);
+}
+.agacha-sorteio .agacha-sortear:hover:not(:disabled) {
+  background: linear-gradient(135deg, #5b3bbd 0%, #8f6ae6 100%);
+  box-shadow: 0 4px 16px rgba(217, 180, 90, 0.5);
+  transform: translateY(-2px);
+}
+.agacha-sorteio .agacha-discreto {
+  background: rgba(255, 255, 255, 0.07);
+  color: #cfc8e2;
+  border-color: rgba(255, 255, 255, 0.18);
+}
+.agacha-sorteio .agacha-discreto:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+.agacha-sorteio .agacha-ouro {
+  background: linear-gradient(135deg, #8a6a22 0%, var(--ag-ouro) 100%);
+  color: #1b1408;
+  box-shadow: 0 2px 10px rgba(217, 180, 90, 0.35);
+}
+.agacha-sorteio .agacha-ouro:hover:not(:disabled) {
+  background: linear-gradient(135deg, #a07c2c 0%, var(--ag-ouro-claro) 100%);
+  transform: translateY(-2px);
+}
+
+/* ---------- Barra de cima ---------- */
+.agacha-sorteio .agacha-barra {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 10px 14px;
+  background: rgba(0, 0, 0, 0.42);
+  border-bottom: 1px solid rgba(217, 180, 90, 0.28);
+}
+.agacha-sorteio .agacha-aviso {
+  justify-content: center;
+  color: var(--ag-ouro-claro);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+.agacha-sorteio .agacha-publico {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  font-size: 13px;
+  color: #cfc8e2;
+  cursor: var(--cursor-pointer, pointer);
+}
+.agacha-sorteio .agacha-publico input {
+  margin: 0;
+}
+
+/* ---------- Palco ---------- */
+.agacha-sorteio .agacha-palco {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 340px;
+  padding: 26px 20px 14px;
+}
+.agacha-sorteio .agacha-parado {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+  color: rgba(233, 228, 245, 0.7);
+}
+.agacha-sorteio .agacha-parado > .agacha-icone {
+  width: 96px;
+  height: 96px;
+  color: var(--ag-ouro);
+  filter: drop-shadow(0 0 22px rgba(123, 85, 214, 0.9));
+  animation: agacha-flutuar 3.2s ease-in-out infinite;
+}
+@keyframes agacha-flutuar {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-12px); }
+}
+.agacha-sorteio .agacha-parado p {
+  margin: 0;
+  font-size: 14px;
+}
+.agacha-sorteio .agacha-alerta {
+  max-width: 420px;
+  color: #ffb27a;
+}
+.agacha .agacha-resumo {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px 12px;
+  margin: 0;
+  font-size: 12px;
+}
+.agacha .agacha-resumo span {
+  color: var(--rar);
+  font-weight: 700;
+}
+
+/* ---------- Mesa de cartas ---------- */
+.agacha-sorteio .agacha-palco {
+  position: relative;
+}
+.agacha-sorteio .agacha-palco.tremendo .agacha-mesa {
+  animation: agacha-tremer-palco 0.45s ease-out;
+}
+@keyframes agacha-tremer-palco {
+  0%   { transform: translate(0, 0); }
+  15%  { transform: translate(-6px, 3px); }
+  30%  { transform: translate(5px, -4px); }
+  45%  { transform: translate(-4px, -2px); }
+  60%  { transform: translate(3px, 3px); }
+  80%  { transform: translate(-2px, 1px); }
+  100% { transform: translate(0, 0); }
+}
+.agacha-sorteio .agacha-mesa {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 18px;
+  --larg: 150px;
+}
+.agacha-sorteio .cartas-1  { --larg: 220px; }
+.agacha-sorteio .cartas-3  { --larg: 180px; }
+.agacha-sorteio .cartas-5  { --larg: 144px; gap: 14px; }
+.agacha-sorteio .cartas-2  { --larg: 200px; }
+.agacha-sorteio .cartas-4  { --larg: 165px; }
+.agacha-sorteio .cartas-6,
+.agacha-sorteio .cartas-7,
+.agacha-sorteio .cartas-8,
+.agacha-sorteio .cartas-9,
+.agacha-sorteio .cartas-10 { --larg: 132px; max-width: 760px; gap: 14px 18px; }
+.agacha-sorteio .cartas-6,
+.agacha-sorteio .cartas-7,
+.agacha-sorteio .cartas-8 { max-width: 610px; }
+
+.agacha-sorteio .agacha-vaga {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: var(--larg);
+}
+/* As cartas caem do alto, girando, e assentam na mesa */
+.agacha-sorteio .chegando .agacha-vaga {
+  animation: agacha-chegar 0.6s calc(var(--atraso, 0s) + 0.18s) backwards cubic-bezier(0.2, 0.9, 0.3, 1.25);
+}
+@keyframes agacha-chegar {
+  from { opacity: 0; transform: translate(-460px, -30px) rotate(var(--inclina, -10deg)) scale(0.45); }
+  60%  { opacity: 1; }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Carta: giro de verdade em 3D */
+.agacha-sorteio .agacha-carta {
+  position: relative;
+  z-index: 2;
+  width: var(--larg);
+  aspect-ratio: 5 / 7;
+  perspective: 900px;
+  transition: transform 0.3s cubic-bezier(0.3, 1.4, 0.5, 1);
+}
+.agacha-sorteio .agacha-carta.virando {
+  transform: translateY(-12px) scale(1.1);
+  z-index: 6;
+}
+.agacha-sorteio .agacha-carta.revelada {
+  cursor: var(--cursor-pointer, pointer);
+}
+.agacha-sorteio .agacha-carta.revelada:not(.virando):hover {
+  transform: translateY(-6px) scale(1.03);
+}
+.agacha-sorteio .agacha-giro {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.45, 0.05, 0.25, 1.2);
+}
+.agacha-sorteio .agacha-carta.revelada .agacha-giro {
+  transform: rotateY(180deg);
+}
+.agacha-sorteio .fase-pronto .agacha-carta:not(.virando) .agacha-giro {
+  transition: none;
+}
+.agacha-sorteio .agacha-verso,
+.agacha-sorteio .agacha-frente {
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Verso: marca Arcano Lab */
+.agacha-sorteio .agacha-verso {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 2px solid var(--ag-ouro);
+  background:
+    repeating-linear-gradient(45deg, rgba(217, 180, 90, 0.07) 0 2px, transparent 2px 12px),
+    repeating-linear-gradient(-45deg, rgba(217, 180, 90, 0.07) 0 2px, transparent 2px 12px),
+    radial-gradient(ellipse at 50% 40%, #3a2670 0%, #150f26 100%);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.65), inset 0 0 0 5px #150f26, inset 0 0 0 6px rgba(217, 180, 90, 0.55),
+    inset 0 0 36px rgba(123, 85, 214, 0.6);
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+.agacha-sorteio .agacha-verso img {
+  width: 52%;
+  border: none;
+  filter: drop-shadow(0 0 12px rgba(169, 139, 240, 0.9));
+  animation: agacha-pulsar 2.4s ease-in-out infinite alternate;
+}
+@keyframes agacha-pulsar {
+  from { filter: drop-shadow(0 0 6px rgba(169, 139, 240, 0.5)); }
+  to   { filter: drop-shadow(0 0 18px rgba(217, 180, 90, 0.9)); }
+}
+.agacha-sorteio .agacha-verso span {
+  font-family: "Modesto Condensed", "Palatino Linotype", serif;
+  font-size: calc(var(--larg) * 0.105);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ag-ouro);
+}
+
+/* Suspense: a carta rara "carrega" antes de virar, já na cor da raridade */
+.agacha-sorteio .agacha-vaga.carregando .agacha-carta {
+  animation: agacha-tremer 0.09s linear infinite;
+  z-index: 6;
+}
+@keyframes agacha-tremer {
+  0%   { transform: translate(-2px, 1px) rotate(-1.2deg) scale(1.05); }
+  25%  { transform: translate(2px, -1px) rotate(1deg) scale(1.06); }
+  50%  { transform: translate(-1px, -2px) rotate(-0.6deg) scale(1.07); }
+  75%  { transform: translate(2px, 2px) rotate(1.3deg) scale(1.06); }
+  100% { transform: translate(-2px, 1px) rotate(-1.2deg) scale(1.05); }
+}
+.agacha-sorteio .agacha-vaga.carregando .agacha-verso {
+  border-color: var(--rar);
+  box-shadow: 0 0 34px var(--rar), inset 0 0 0 5px #150f26, inset 0 0 0 6px var(--rar),
+    inset 0 0 46px color-mix(in srgb, var(--rar) 70%, transparent);
+}
+.agacha-sorteio .agacha-aura {
+  position: absolute;
+  z-index: 0;
+  left: 50%;
+  top: calc(var(--larg) * 0.7);
+  width: calc(var(--larg) * 2.1);
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--rar) 75%, transparent) 0%, transparent 66%);
+  opacity: 0;
+  pointer-events: none;
+}
+.agacha-sorteio .agacha-vaga.carregando .agacha-aura {
+  animation: agacha-carregar 0.5s ease-in-out infinite alternate;
+}
+@keyframes agacha-carregar {
+  from { opacity: 0.35; transform: scale(0.75); }
+  to   { opacity: 0.95; transform: scale(1.12); }
+}
+
+/* Raios de luz girando atrás das cartas Muito raro, Lendário e Artefato */
+.agacha-sorteio .agacha-raios {
+  position: absolute;
+  z-index: 0;
+  left: 50%;
+  top: calc(var(--larg) * 0.7);
+  width: calc(var(--larg) * 2.3);
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: repeating-conic-gradient(from 0deg,
+    color-mix(in srgb, var(--rar) 80%, transparent) 0deg 7deg, transparent 7deg 20deg);
+  -webkit-mask: radial-gradient(circle, #000 12%, transparent 68%);
+  mask: radial-gradient(circle, #000 12%, transparent 68%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s ease 0.3s;
+  animation: agacha-girar 14s linear infinite;
+}
+@keyframes agacha-girar {
+  to { rotate: 360deg; }
+}
+.agacha-sorteio .rar-veryRare:has(.revelada) .agacha-raios  { opacity: 0.3; }
+.agacha-sorteio .rar-legendary:has(.revelada) .agacha-raios { opacity: 0.6; }
+.agacha-sorteio .rar-artifact:has(.revelada) .agacha-raios  { opacity: 0.8; animation-duration: 9s; }
+
+/* Estouro da revelação: anel de luz e faíscas */
+.agacha-sorteio .agacha-estouro {
+  position: absolute;
+  z-index: 7;
+  left: 50%;
+  top: calc(var(--larg) * 0.7);
+  width: var(--larg);
+  height: var(--larg);
+  translate: -50% -50%;
+  pointer-events: none;
+}
+.agacha-sorteio .agacha-anel {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 3px solid var(--rar);
+  box-shadow: 0 0 24px var(--rar), inset 0 0 24px var(--rar);
+  animation: agacha-anel 0.7s ease-out forwards;
+}
+@keyframes agacha-anel {
+  from { transform: scale(0.3); opacity: 1; }
+  to   { transform: scale(2.6); opacity: 0; }
+}
+.agacha-sorteio .agacha-faisca {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--tam);
+  height: var(--tam);
+  margin: calc(var(--tam) / -2);
+  background: #fff;
+  box-shadow: 0 0 8px 2px var(--rar), 0 0 16px 4px color-mix(in srgb, var(--rar) 60%, transparent);
+  clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
+  animation: agacha-faisca var(--dur) cubic-bezier(0.15, 0.7, 0.3, 1) forwards;
+}
+@keyframes agacha-faisca {
+  from { transform: rotate(var(--ang)) translateX(0) scale(1.4); opacity: 1; }
+  70%  { opacity: 1; }
+  to   { transform: rotate(var(--ang)) translateX(var(--alc)) scale(0); opacity: 0; }
+}
+
+/* Clarão no palco inteiro (Lendário e Artefato) */
+.agacha-sorteio .agacha-clarao {
+  position: absolute;
+  z-index: 8;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 45%, #fff 0%, var(--rar) 35%, transparent 75%);
+  mix-blend-mode: screen;
+  animation: agacha-clarao 0.9s ease-out forwards;
+}
+@keyframes agacha-clarao {
+  from { opacity: 0.95; }
+  to   { opacity: 0; }
+}
+
+/* Frente: item na cor da raridade */
+.agacha-sorteio .agacha-frente {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 8px 10px;
+  border: 2px solid var(--rar);
+  background:
+    radial-gradient(ellipse at 50% 42%, color-mix(in srgb, var(--rar) 30%, transparent), transparent 70%),
+    linear-gradient(165deg, color-mix(in srgb, var(--rar) 22%, #17131f) 0%, #0d0a14 100%);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.65), 0 0 22px color-mix(in srgb, var(--rar) 45%, transparent),
+    inset 0 0 24px color-mix(in srgb, var(--rar) 14%, transparent);
+  transform: rotateY(180deg);
+}
+.agacha-sorteio .rar-common .agacha-frente {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.65);
+}
+.agacha-sorteio .rar-veryRare .revelada .agacha-frente,
+.agacha-sorteio .rar-legendary .revelada .agacha-frente,
+.agacha-sorteio .rar-artifact .revelada .agacha-frente {
+  animation: agacha-brilho 1.8s 0.4s ease-in-out infinite alternate;
+}
+@keyframes agacha-brilho {
+  from { box-shadow: 0 6px 16px rgba(0, 0, 0, 0.65), 0 0 22px color-mix(in srgb, var(--rar) 50%, transparent),
+           inset 0 0 24px color-mix(in srgb, var(--rar) 14%, transparent); }
+  to   { box-shadow: 0 6px 16px rgba(0, 0, 0, 0.65), 0 0 54px var(--rar),
+           inset 0 0 46px color-mix(in srgb, var(--rar) 32%, transparent); }
+}
+/* Reflexo de foil passando pela carta: uma vez no Raro, sempre nas maiores */
+.agacha-sorteio .agacha-frente::after {
+  content: "";
+  position: absolute;
+  inset: -20% -60%;
+  background: linear-gradient(115deg, transparent 42%, rgba(255, 255, 255, 0.55) 50%, transparent 58%);
+  transform: translateX(-70%);
+  pointer-events: none;
+}
+.agacha-sorteio .rar-uncommon .revelada .agacha-frente::after,
+.agacha-sorteio .rar-rare .revelada .agacha-frente::after {
+  animation: agacha-foil 0.9s 0.45s ease-out 1 both;
+}
+.agacha-sorteio .rar-veryRare .revelada .agacha-frente::after,
+.agacha-sorteio .rar-legendary .revelada .agacha-frente::after,
+.agacha-sorteio .rar-artifact .revelada .agacha-frente::after {
+  animation: agacha-foil 2.6s 0.45s ease-in-out infinite both;
+}
+@keyframes agacha-foil {
+  0%        { transform: translateX(-70%); }
+  45%, 100% { transform: translateX(70%); }
+}
+.agacha-sorteio .agacha-selo {
+  width: 100%;
+  padding: 3px 6px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.6);
+  color: var(--rar);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.agacha-sorteio .agacha-arte {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.agacha-sorteio .agacha-arte img {
+  max-width: 78%;
+  max-height: 100%;
+  border: none;
+  border-radius: 8px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 10px color-mix(in srgb, var(--rar) 60%, transparent));
+}
+.agacha-sorteio .agacha-nome {
+  font-family: "Modesto Condensed", "Palatino Linotype", serif;
+  font-size: calc(var(--larg) * 0.115);
+  line-height: 1.05;
+  color: #fff;
+  text-align: center;
+  text-shadow: 0 1px 4px #000;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
+
+/* Entrega embaixo da carta: só depois de reveladas */
+.agacha-sorteio .agacha-entrega {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  min-height: 28px;
+  visibility: hidden;
+}
+.agacha-sorteio .agacha-vaga:has(.agacha-carta.revelada:not(.virando)):not(.destaque) .agacha-entrega {
+  visibility: visible;
+  animation: agacha-subir 0.35s ease backwards;
+}
+.agacha-sorteio .agacha-entregar {
+  width: 100%;
+  height: 28px;
+  font-size: 12px;
+  color: #e9e4f5;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(217, 180, 90, 0.45);
+  border-radius: 4px;
+}
+.agacha-sorteio .agacha-entregar option {
+  color: #e9e4f5;
+  background: var(--ag-fundo);
+}
+.agacha-sorteio .agacha-entregue {
+  display: block;
+  font-size: 12px;
+  line-height: 28px;
+  text-align: center;
+  color: #7be39b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---------- Rodapé do palco ---------- */
+.agacha-sorteio .agacha-rodape {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  min-height: 34px;
+  padding: 0 14px 14px;
+}
+.agacha-sorteio .so-mesa,
+.agacha-sorteio .so-animando,
+.agacha-sorteio .so-pronto {
+  display: none;
+}
+.agacha-sorteio .fase-mesa .so-mesa {
+  display: inline-flex;
+  align-items: center;
+}
+.agacha-sorteio .agacha-dica {
+  font-size: 12px;
+  color: rgba(233, 228, 245, 0.65);
+}
+.agacha-sorteio .fase-animando .so-animando {
+  display: inline-flex;
+}
+.agacha-sorteio .fase-pronto .so-pronto {
+  display: inline-flex;
+  animation: agacha-subir 0.35s ease backwards;
+}
+@keyframes agacha-subir {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: none; }
+}
+.agacha-sorteio .agacha-assinatura {
+  margin: 0 14px 14px;
+}
+
+/* ==================================================================
+   Janela do pool
+   ================================================================== */
+.agacha-pool .agacha-corpo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  height: 100%;
+  min-height: 0;
+}
+.agacha-pool .agacha-instrucoes {
+  margin: 0;
+}
+.agacha-pool .agacha-ferramentas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.agacha-pool .agacha-ferramentas input {
+  flex: 1 1 160px;
+}
+.agacha-pool .agacha-ferramentas button {
+  flex: 0 0 auto;
+  width: auto;
+  white-space: nowrap;
+}
+.agacha-pool .agacha-cabecalho,
+.agacha-pool .agacha-linha {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 124px 72px 56px 28px;
+  gap: 8px;
+  align-items: center;
+}
+.agacha-pool .agacha-cabecalho {
+  padding: 0 14px 0 8px;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ag-ouro);
+}
+.agacha-pool .agacha-lista {
+  flex: 1;
+  min-height: 120px;
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+  overflow-y: auto;
+  border: 1px solid rgba(217, 180, 90, 0.35);
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.12);
+  transition: background 0.15s, outline-color 0.15s;
+  outline: 2px dashed transparent;
+  outline-offset: -4px;
+}
+.agacha-pool .agacha-lista.soltar {
+  background: rgba(123, 85, 214, 0.16);
+  outline-color: var(--ag-roxo);
+}
+.agacha-pool .agacha-linha {
+  padding: 3px 4px;
+  border-left: 3px solid var(--rar);
+  border-radius: 4px;
+}
+.agacha-pool .agacha-linha[hidden] {
+  display: none;
+}
+.agacha-pool .agacha-linha:nth-child(odd) {
+  background: rgba(123, 85, 214, 0.08);
+}
+.agacha-pool .agacha-linha:hover {
+  background: rgba(217, 180, 90, 0.14);
+}
+.agacha-pool .agacha-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.agacha-pool .agacha-item img {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 4px;
+  object-fit: cover;
+}
+.agacha-pool .agacha-item span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.agacha-pool .agacha-linha select,
+.agacha-pool .agacha-linha input {
+  height: 26px;
+  font-size: 12px;
+}
+.agacha-pool .agacha-linha input {
+  text-align: center;
+}
+.agacha-pool .agacha-chance {
+  font-size: 12px;
+  text-align: right;
+  opacity: 0.8;
+}
+.agacha-pool .agacha-linha button {
+  width: 26px;
+  height: 26px;
+  min-height: 0;
+}
+.agacha-pool .agacha-vazio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 200px;
+  text-align: center;
+  opacity: 0.7;
+}
+.agacha-pool .agacha-vazio .agacha-icone {
+  width: 56px;
+  height: 56px;
+  color: var(--ag-roxo-claro);
+}
+.agacha-pool .agacha-salvar {
+  border-color: var(--ag-ouro);
+}
+
+/* Diálogo de importação */
+.agacha-importar .agacha-marcas {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px 10px;
+}
+.agacha-importar .agacha-marcas label,
+.agacha-importar .agacha-sem-raridade {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.agacha-importar .agacha-marcas label {
+  color: var(--rar);
+  font-weight: 700;
+}
+.agacha-importar .agacha-sem-raridade {
+  margin-top: 8px;
+}
+
+/* ==================================================================
+   Chat
+   ================================================================== */
+.agacha-chat h3 {
+  margin: 0 0 6px;
+  font-size: 16px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgba(217, 180, 90, 0.6);
+  color: var(--ag-roxo);
+}
+.agacha-chat .agacha-chat-linha {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 0 3px 6px;
+  border-left: 3px solid var(--rar);
+}
+.agacha-chat .agacha-chat-linha > img {
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 4px;
+  object-fit: cover;
+}
+.agacha-chat .agacha-chat-rar {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--rar);
+  filter: brightness(0.8) saturate(1.3);
+  white-space: nowrap;
+}
+.agacha-chat .agacha-chat-linha .agacha-chat-rar {
+  display: block;
+}
+/* Resultado do sorteio: uma linha por item, para dez itens caberem no cartão do chat */
+.agacha-chat .agacha-chat-lista {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.agacha-chat .agacha-chat-lista li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 26px;
+  margin: 0 0 2px;
+  padding: 0 0 0 5px;
+  border-left: 3px solid var(--rar);
+}
+.agacha-chat .agacha-chat-lista img {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border: none;
+  border-radius: 3px;
+  object-fit: cover;
+}
+.agacha-chat .agacha-chat-nome {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 13px;
+}
+.agacha-chat .agacha-chat-nome .content-link {
+  white-space: nowrap;
+}
+.agacha-chat footer {
+  margin-top: 6px;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: right;
+  opacity: 0.55;
+}
+
+/* ==================================================================
+   Assinatura Arcano Lab + link do Patreon
+   ================================================================== */
+.agacha .agacha-assinatura {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 1px dashed rgba(217, 180, 90, 0.45);
+  border-radius: 6px;
+  background: linear-gradient(135deg, rgba(123, 85, 214, 0.18), rgba(21, 16, 33, 0.35));
+}
+.agacha .agacha-marca {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  line-height: 1.15;
+}
+.agacha .agacha-marca > img {
+  width: 36px;
+  height: 36px;
+  flex: none;
+  border: none;
+}
+.agacha .agacha-marca strong {
+  display: block;
+  color: var(--ag-ouro);
+  letter-spacing: 0.04em;
+}
+.agacha .agacha-marca span {
+  display: block;
+  font-size: 11px;
+  opacity: 0.85;
+}
+.agacha .agacha-marca em {
+  display: block;
+  font-size: 11px;
+  opacity: 0.7;
+}
+.agacha.agacha-cfg-assinatura {
+  margin-top: 12px;
+}
+.agacha .agacha-patreon {
+  flex: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  background: var(--ag-roxo);
+  color: #fff;
+  font-weight: 600;
+  white-space: nowrap;
+  text-decoration: none;
+}
+.agacha .agacha-patreon:hover {
+  background: #8f6ae6;
+  color: #fff;
+  text-shadow: none;
+  box-shadow: 0 0 6px rgba(217, 180, 90, 0.6);
+}
+
+/* Carta virada para baixo esperando o clique do mestre */
+.agacha-sorteio .do-mestre.fase-mesa .agacha-carta:not(.revelada) {
+  cursor: var(--cursor-pointer, pointer);
+}
+.agacha-sorteio .do-mestre.fase-mesa:not(.chegando) .agacha-vaga:not(.carregando) .agacha-carta:not(.revelada):hover {
+  transform: translateY(-8px) scale(1.04);
+}
+.agacha-sorteio .do-mestre.fase-mesa .agacha-vaga:not(.carregando) .agacha-carta:not(.revelada):hover .agacha-verso {
+  border-color: var(--ag-ouro-claro);
+  box-shadow: 0 0 26px rgba(217, 180, 90, 0.75), inset 0 0 0 5px #150f26, inset 0 0 0 6px rgba(217, 180, 90, 0.8),
+    inset 0 0 36px rgba(123, 85, 214, 0.6);
+}
+
+/* ---------- Dados da sorte ---------- */
+.agacha-sorteio .agacha-sorte {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 8px;
+  padding: 6px 14px;
+  background: rgba(123, 85, 214, 0.14);
+  border-bottom: 1px solid rgba(217, 180, 90, 0.18);
+  font-size: 12px;
+}
+.agacha-sorteio .agacha-sorte-titulo {
+  color: var(--ag-ouro);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+.agacha-sorteio .agacha-fichas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.agacha-sorteio .agacha-ficha {
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(169, 139, 240, 0.5);
+  white-space: nowrap;
+}
+.agacha-sorteio .agacha-ficha b {
+  color: var(--ag-ouro-claro);
+}
+.agacha-sorteio .agacha-ficha.critico {
+  border-color: var(--ag-ouro);
+  box-shadow: 0 0 8px rgba(217, 180, 90, 0.7);
+}
+.agacha-sorteio .agacha-ficha.esperando {
+  opacity: 0.55;
+  border-style: dashed;
+}
+.agacha-sorteio .agacha-sorte-valor {
+  margin-right: auto;
+  padding: 2px 10px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #8a6a22, var(--ag-ouro));
+  color: #1b1408;
+  font-weight: 800;
+}
+.agacha-sorteio .agacha-sorte-dica {
+  margin-right: auto;
+  color: rgba(233, 228, 245, 0.6);
+}
+.agacha-sorteio .agacha-botao.agacha-mini {
+  height: 26px;
+  padding: 0 10px;
+  font-size: 12px;
+}
+.agacha-sorteio .agacha-botao.agacha-grande {
+  height: 48px;
+  padding: 0 28px;
+  font-size: 18px;
+}
+.agacha-sorteio .agacha-pedido > .fa-dice-d20 {
+  font-size: 84px;
+  color: var(--ag-ouro);
+  filter: drop-shadow(0 0 22px rgba(123, 85, 214, 0.9));
+  animation: agacha-flutuar 3.2s ease-in-out infinite;
+}
+.agacha-sorteio .agacha-pedido p {
+  font-size: 16px;
+  color: var(--ag-ouro-claro);
+}
+.agacha-sorteio .agacha-tirou b {
+  font-size: 28px;
+  color: #fff;
+}
+
+/* ---------- Fogos de artifício na tela inteira ---------- */
+canvas.agacha-fogos {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 99999;
+  pointer-events: none;
+}
+
+/* ---------- Chat: nada pode ficar mais largo que o cartão ---------- */
+.agacha-chat {
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+.agacha-chat .agacha-chat-linha > div {
+  flex: 1;
+  min-width: 0;
+}
+/* O link de item do Foundry não quebra linha por padrão: nome comprido empurrava o chat inteiro */
+.agacha-chat .agacha-chat-linha .content-link {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.agacha-chat .agacha-chat-lista li {
+  min-width: 0;
+  overflow: hidden;
+}
+.agacha-chat .agacha-chat-nome .content-link {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+}
+
+/* ==================================================================
+   Cena: o mago à esquerda, o palco à direita
+   ================================================================== */
+.agacha-sorteio .agacha-cena {
+  display: flex;
+  align-items: stretch;
+  min-height: 420px;
+}
+.agacha-sorteio .agacha-palco {
+  flex: 1;
+  min-width: 0;
+}
+.agacha-sorteio .agacha-mago {
+  position: relative;
+  flex: 0 0 270px;
+  display: flex;
+  flex-direction: column;
+  padding: 0 10px 10px;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 50% 38%, #2a1030 0%, #150f26 78%);
+  border-right: 1px solid rgba(217, 180, 90, 0.35);
+  box-shadow: inset -18px 0 30px -12px rgba(0, 0, 0, 0.7);
+}
+
+/* O mascote: respira parado, ginga ao embaralhar, pula na carta lendária, dá um pulinho a cada fala */
+.agacha-sorteio .agacha-mascote {
+  position: relative;
+  flex: 1;
+  min-height: 300px;
+  transform-origin: 50% 92%;
+  animation: agacha-respirar 3.4s ease-in-out infinite;
+}
+@keyframes agacha-respirar {
+  0%, 100% { transform: translateY(0) scale(1, 1); }
+  50%      { transform: translateY(-5px) scale(1.012, 1.025); }
+}
+.agacha-sorteio .humor-embaralha .agacha-mascote {
+  animation: agacha-gingar 0.56s ease-in-out infinite;
+}
+@keyframes agacha-gingar {
+  0%, 100% { transform: rotate(-3.5deg) translateY(0); }
+  25%      { transform: rotate(0deg) translateY(-7px); }
+  50%      { transform: rotate(3.5deg) translateY(0); }
+  75%      { transform: rotate(0deg) translateY(-7px); }
+}
+.agacha-sorteio .humor-revela .agacha-mascote {
+  animation: agacha-festejar 0.62s cubic-bezier(0.3, 0, 0.4, 1) infinite;
+}
+@keyframes agacha-festejar {
+  0%, 100% { transform: translateY(0) scale(1.04, 0.96); }
+  45%      { transform: translateY(-26px) scale(0.98, 1.05) rotate(-2deg); }
+  70%      { transform: translateY(-18px) scale(1, 1.02) rotate(2deg); }
+}
+.agacha-sorteio .humor-revela.agacha-mago::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 60% 22%, rgba(255, 214, 130, 0.5), transparent 62%);
+  animation: agacha-carregar 0.5s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+.agacha-sorteio .agacha-mascote-pulo {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% 92%;
+}
+.agacha-sorteio .agacha-mascote-pulo.pulando {
+  animation: agacha-pulinho 0.5s cubic-bezier(0.3, 0, 0.4, 1);
+}
+@keyframes agacha-pulinho {
+  0%   { transform: translateY(0) scale(1.05, 0.93); }
+  40%  { transform: translateY(-20px) scale(0.97, 1.06); }
+  75%  { transform: translateY(0) scale(1.03, 0.96); }
+  100% { transform: none; }
+}
+.agacha-sorteio .agacha-mago img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  object-fit: contain;
+  object-position: 50% 60%;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  /* some com as bordas do fundo da pintura, para o mascote não ficar num retângulo */
+  -webkit-mask: radial-gradient(ellipse 62% 58% at 50% 52%, #000 72%, transparent 100%);
+  mask: radial-gradient(ellipse 62% 58% at 50% 52%, #000 72%, transparent 100%);
+}
+.agacha-sorteio .agacha-mago img.on {
+  opacity: 1;
+}
+/* Brilhinhos piscando em volta dele */
+.agacha-sorteio .agacha-brilho {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: 9px;
+  height: 9px;
+  background: #fff3cf;
+  clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
+  filter: drop-shadow(0 0 4px var(--ag-ouro));
+  opacity: 0;
+  animation: agacha-piscar 2.6s var(--d) ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes agacha-piscar {
+  0%, 100% { opacity: 0; transform: scale(0.3) rotate(0deg); }
+  50%      { opacity: 0.95; transform: scale(1.2) rotate(45deg); }
+}
+.agacha-sorteio .humor-revela .agacha-brilho {
+  animation-duration: 0.7s;
+}
+.agacha-sorteio .agacha-balao {
+  position: relative;
+  z-index: 1;
+  flex: none;
+}
+.agacha-sorteio .agacha-mago-nome {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 6px 6px 0 0;
+  background: linear-gradient(135deg, #8a6a22, var(--ag-ouro));
+  color: #1b1408;
+  font-family: "Modesto Condensed", "Palatino Linotype", serif;
+  font-size: 15px;
+  letter-spacing: 0.06em;
+}
+.agacha-sorteio .agacha-fala {
+  margin: 0;
+  min-height: 3.9em;
+  padding: 8px 10px;
+  border: 1px solid rgba(217, 180, 90, 0.7);
+  border-radius: 0 8px 8px 8px;
+  background: rgba(18, 14, 29, 0.9);
+  color: #f1ecfb;
+  font-size: 13px;
+  font-style: italic;
+  line-height: 1.3;
+}
+.agacha-sorteio .agacha-fala.nova {
+  animation: agacha-falar 0.35s ease-out;
+}
+@keyframes agacha-falar {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ---------- Capa ---------- */
+.agacha-sorteio .agacha-capa {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  max-width: 640px;
+  text-align: center;
+}
+.agacha-sorteio .agacha-capa-titulo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+  border: none;
+  line-height: 1;
+}
+.agacha-sorteio .agacha-capa-titulo .agacha-icone {
+  width: 54px;
+  height: 54px;
+  color: var(--ag-ouro);
+  filter: drop-shadow(0 0 16px rgba(123, 85, 214, 0.9));
+  animation: agacha-flutuar 3.2s ease-in-out infinite;
+}
+.agacha-sorteio .agacha-capa-titulo span {
+  font-family: "Modesto Condensed", "Palatino Linotype", serif;
+  font-size: 64px;
+  letter-spacing: 0.04em;
+  background: linear-gradient(180deg, #fff3cf 10%, var(--ag-ouro) 55%, #8a6a22 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.agacha-sorteio .agacha-capa-titulo small {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.5em;
+  text-transform: uppercase;
+  color: var(--ag-roxo-claro);
+}
+.agacha-sorteio .agacha-quadros {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: stretch;
+  gap: 10px;
+  width: 100%;
+}
+.agacha-sorteio .agacha-quadro {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 0;
+  padding: 10px 16px;
+  border: 1px solid rgba(217, 180, 90, 0.35);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.35);
+  list-style: none;
+}
+.agacha-sorteio .agacha-quadro > b {
+  font-family: "Modesto Condensed", "Palatino Linotype", serif;
+  font-size: 34px;
+  line-height: 1;
+  color: var(--ag-ouro-claro);
+}
+.agacha-sorteio .agacha-quadro > span {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(233, 228, 245, 0.7);
+}
+.agacha-sorteio .agacha-quadro > small {
+  margin-top: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--rar);
+}
+.agacha-sorteio .agacha-barras {
+  flex: 1 1 260px;
+  gap: 4px;
+  text-align: left;
+}
+.agacha-sorteio .agacha-barras li {
+  display: grid;
+  grid-template-columns: 78px 1fr 52px;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+}
+.agacha-sorteio .agacha-barras span {
+  color: var(--rar);
+  font-weight: 700;
+}
+.agacha-sorteio .agacha-barras i {
+  height: 8px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+.agacha-sorteio .agacha-barras i b {
+  display: block;
+  height: 100%;
+  border-radius: 4px;
+  background: var(--rar);
+  box-shadow: 0 0 8px var(--rar);
+}
+.agacha-sorteio .agacha-barras em {
+  font-style: normal;
+  text-align: right;
+  color: #e9e4f5;
+}
+.agacha-sorteio .agacha-capa .agacha-pedido {
+  margin: 0;
+  font-size: 17px;
+  color: var(--ag-ouro-claro);
+}
+.agacha-sorteio .agacha-capa .agacha-tirou {
+  margin: 0;
+  font-size: 16px;
+}
+.agacha-sorteio .agacha-capa .agacha-dica {
+  margin: 0;
+}
+.agacha-sorteio .agacha-sorte-botoes {
+  display: inline-flex;
+  gap: 6px;
+}
+.agacha-sorteio .agacha-sorte-valor {
+  margin-right: 0;
+}
+.agacha-sorteio .agacha-sorte-garante {
+  padding: 2px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--rar);
+  color: var(--rar);
+  font-weight: 800;
+}
+.agacha-sorteio .agacha-sorte-botoes {
+  margin-left: auto;
+}
+
+/* ---------- O mago embaralha ---------- */
+.agacha-sorteio .agacha-baralho {
+  position: relative;
+  width: 150px;
+  aspect-ratio: 5 / 7;
+}
+.agacha-sorteio .agacha-baralho i {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--ag-ouro);
+  border-radius: 12px;
+  background: radial-gradient(ellipse at 50% 40%, #3a2670 0%, #150f26 100%);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6), inset 0 0 0 5px #150f26, inset 0 0 0 6px rgba(217, 180, 90, 0.55);
+  animation: agacha-embaralhar 0.52s ease-in-out infinite;
+  animation-delay: calc(var(--k) * 65ms);
+}
+.agacha-sorteio .agacha-baralho i:nth-child(odd)  { --lado: -1; }
+.agacha-sorteio .agacha-baralho i:nth-child(even) { --lado: 1; }
+.agacha-sorteio .agacha-baralho img {
+  width: 50%;
+  border: none;
+}
+@keyframes agacha-embaralhar {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  50%      { transform: translate(calc(var(--lado) * 95px), -16px) rotate(calc(var(--lado) * 11deg)); }
+}
+
+/* ==================================================================
+   Janela de ajuste dos dados da sorte
+   ================================================================== */
+.agacha-sorte-config .agacha-corpo {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.agacha-sorte-config h3 {
+  margin: 4px 0 0;
+  font-size: 17px;
+  color: var(--ag-ouro);
+  border-bottom: 1px solid rgba(217, 180, 90, 0.4);
+}
+.agacha-sorte-config .agacha-forca {
+  flex: 0 0 230px;
+  white-space: nowrap;
+  font-weight: 700;
+  color: var(--ag-ouro);
+  text-align: right;
+}
+.agacha-sorte-config .agacha-tabela {
+  width: 100%;
+  margin: 0;
+  border-collapse: collapse;
+  font-size: 13px;
+  text-align: center;
+}
+.agacha-sorte-config .agacha-tabela th,
+.agacha-sorte-config .agacha-tabela td {
+  padding: 5px 6px;
+  border: 1px solid rgba(217, 180, 90, 0.22);
+}
+.agacha-sorte-config .agacha-tabela thead th {
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  background: rgba(123, 85, 214, 0.2);
+}
+.agacha-sorte-config .agacha-tabela thead th[class^="rar-"],
+.agacha-sorte-config .agacha-tabela td[class^="rar-"] {
+  color: var(--rar);
+  font-weight: 700;
+}
+.agacha-sorte-config .agacha-tabela tbody th {
+  text-align: left;
+  white-space: nowrap;
+}
+.agacha-sorte-config .agacha-tabela .agacha-base {
+  opacity: 0.75;
+  font-style: italic;
+}
+.agacha-sorte-config .agacha-tabela .agacha-destaque {
+  font-weight: 800;
+  color: var(--ag-ouro);
+  background: rgba(217, 180, 90, 0.1);
+}
+.agacha-sorte-config input[name="sorteMinimo"] {
+  flex: 0 0 70px;
+  text-align: center;
+}
+.agacha-sorte-config .agacha-salvar {
+  border-color: var(--ag-ouro);
+}
+
+/* O cartão do chat nunca dita a largura de quem está em volta */
+.agacha-chat {
+  contain: inline-size;
+}
+
+/* ==================================================================
+   Correção de um defeito do Foundry 14 (não é deste módulo)
+   O núcleo tem a regra `ol:has(> li:nth-of-type(100)) { padding-left: 2em }`, pensada para listas
+   numeradas compridas. O chat é um <ol>: quando passa de 100 mensagens na tela, a próxima mensagem
+   (uma rolagem, um resultado) faz o chat inteiro andar 30 px para o lado. Aqui o chat volta a zero.
+   ================================================================== */
+ol.chat-log.plain {
+  padding-left: 0;
+}
+
+.agacha-sorteio .agacha-capa-titulo em {
+  margin-top: 6px;
+  font-family: "Modesto Condensed", "Palatino Linotype", serif;
+  font-size: 22px;
+  font-style: normal;
+  letter-spacing: 0.45em;
+  text-transform: uppercase;
+  color: var(--ag-ouro);
+}
+
+/* ==================================================================
+   Faixa da mesa: baralho, quem joga, modo e custo
+   ================================================================== */
+.agacha-sorteio .agacha-mesa-cfg {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  padding: 6px 14px;
+  background: rgba(0, 0, 0, 0.28);
+  border-bottom: 1px solid rgba(217, 180, 90, 0.18);
+  font-size: 12px;
+}
+.agacha-sorteio .agacha-mesa-cfg label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #cfc8e2;
+  white-space: nowrap;
+}
+.agacha-sorteio .agacha-mesa-cfg label > i {
+  color: var(--ag-ouro);
+}
+.agacha-sorteio .agacha-mesa-cfg select,
+.agacha-sorteio .agacha-mesa-cfg input {
+  height: 26px;
+  font-size: 12px;
+  color: #e9e4f5;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(217, 180, 90, 0.4);
+  border-radius: 4px;
+}
+.agacha-sorteio .agacha-mesa-cfg select {
+  width: auto;
+  max-width: 190px;
+}
+.agacha-sorteio .agacha-mesa-cfg select option {
+  color: #e9e4f5;
+  background: var(--ag-fundo);
+}
+.agacha-sorteio .agacha-mesa-cfg input {
+  width: 56px;
+  text-align: center;
+}
+.agacha-sorteio .agacha-avisos {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px 14px;
+  margin: 0;
+  font-size: 12px;
+  color: #cfc8e2;
+}
+.agacha-sorteio .agacha-avisos span[class^="rar-"] {
+  color: var(--rar);
+  font-weight: 700;
+}
+.agacha-sorteio .agacha-avisos i {
+  color: var(--ag-ouro);
+}
+.agacha-sorteio .agacha-sua-vez {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ag-ouro-claro);
+}
+
+/* O jogador da vez também pode virar as cartas */
+.agacha-sorteio .do-jogador.fase-mesa .agacha-carta:not(.revelada) {
+  cursor: var(--cursor-pointer, pointer);
+}
+.agacha-sorteio .do-jogador.fase-mesa:not(.chegando) .agacha-vaga:not(.carregando):not(.destaque) .agacha-carta:not(.revelada):hover {
+  transform: translateY(-8px) scale(1.04);
+}
+
+/* ==================================================================
+   Carta em destaque: a rara voa para o centro do palco, cresce, revela e volta
+   ================================================================== */
+.agacha-sorteio .agacha-voo {
+  position: relative;
+  width: var(--larg);
+  transition: transform 0.45s cubic-bezier(0.3, 1.1, 0.4, 1);
+}
+.agacha-sorteio .agacha-vaga.destaque {
+  z-index: 30;
+}
+.agacha-sorteio .agacha-vaga.destaque .agacha-voo {
+  transform: translate(var(--dx, 0px), var(--dy, 0px)) scale(var(--esc, 1.6));
+}
+.agacha-sorteio .agacha-vaga {
+  transition: opacity 0.35s ease, filter 0.35s ease;
+}
+.agacha-sorteio .com-destaque .agacha-vaga:not(.destaque) {
+  opacity: 0.28;
+  filter: saturate(0.5);
+}
+.agacha-sorteio .com-destaque::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  background: radial-gradient(ellipse at 50% 50%, rgba(13, 9, 22, 0.25), rgba(13, 9, 22, 0.8));
+  pointer-events: none;
+}
+
+/* Modo "escolher": o que ficou para trás aparece apagado */
+.agacha-sorteio .agacha-vaga.descartada {
+  opacity: 0.45;
+  filter: grayscale(0.85);
+  transform: scale(0.94);
+}
+.agacha-sorteio .agacha-vaga.descartada .agacha-raios,
+.agacha-sorteio .agacha-vaga.descartada .agacha-entrega,
+.agacha-sorteio .agacha-vaga.descartada .agacha-frente::after {
+  display: none;
+}
+.agacha-sorteio .agacha-vaga.descartada .agacha-frente {
+  animation: none;
+}
+
+/* ==================================================================
+   Cartas com cara de carta: arte ocupando a carta inteira e moldura por raridade
+   ================================================================== */
+.agacha-sorteio .agacha-frente {
+  padding: 0;
+  gap: 0;
+  border: 3px solid var(--rar);
+  background: #0d0a14;
+}
+.agacha-sorteio .agacha-arte {
+  position: absolute;
+  inset: 0;
+}
+.agacha-sorteio .agacha-arte img {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  border-radius: 0;
+  object-fit: cover;
+  filter: none;
+}
+/* sombra em cima e embaixo para o selo e o nome, e um filete por dentro da moldura */
+.agacha-sorteio .agacha-arte::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(13, 10, 20, 0.78) 0%, transparent 24%, transparent 50%, rgba(13, 10, 20, 0.95) 88%);
+  box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.65), inset 0 0 0 3px color-mix(in srgb, var(--rar) 60%, transparent),
+    inset 0 0 26px color-mix(in srgb, var(--rar) 30%, transparent);
+}
+.agacha-sorteio .agacha-selo {
+  position: absolute;
+  z-index: 1;
+  top: 7px;
+  left: 50%;
+  translate: -50% 0;
+  width: auto;
+  max-width: 88%;
+  padding: 2px 10px;
+  border: 1px solid var(--rar);
+  border-radius: 10px;
+  background: rgba(13, 10, 20, 0.88);
+}
+.agacha-sorteio .agacha-nome {
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 0 8px 9px;
+}
+/* cantoneiras: de Raro para cima */
+.agacha-sorteio .agacha-frente::before {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  z-index: 1;
+  pointer-events: none;
+}
+.agacha-sorteio .rar-rare .agacha-frente::before,
+.agacha-sorteio .rar-veryRare .agacha-frente::before,
+.agacha-sorteio .rar-legendary .agacha-frente::before,
+.agacha-sorteio .rar-artifact .agacha-frente::before {
+  background:
+    radial-gradient(circle at 7px 7px, #fff 0 1.5px, var(--rar) 2px 5px, transparent 6px),
+    radial-gradient(circle at calc(100% - 7px) 7px, #fff 0 1.5px, var(--rar) 2px 5px, transparent 6px),
+    radial-gradient(circle at 7px calc(100% - 7px), #fff 0 1.5px, var(--rar) 2px 5px, transparent 6px),
+    radial-gradient(circle at calc(100% - 7px) calc(100% - 7px), #fff 0 1.5px, var(--rar) 2px 5px, transparent 6px);
+}
+.agacha-sorteio .rar-common .agacha-frente {
+  border-width: 2px;
+}
+.agacha-sorteio .rar-veryRare .agacha-frente {
+  border-color: transparent;
+  background: linear-gradient(#0d0a14, #0d0a14) padding-box,
+    linear-gradient(160deg, #ecc8ff, #7a2fd0 40%, #3b1470 60%, #ecc8ff) border-box;
+}
+.agacha-sorteio .rar-legendary .agacha-frente {
+  border-width: 4px;
+  border-color: transparent;
+  background: linear-gradient(#0d0a14, #0d0a14) padding-box,
+    linear-gradient(160deg, #fff0b8, #ff9326 35%, #a04a00 55%, #ffd27a 80%, #fff0b8) border-box;
+}
+.agacha-sorteio .rar-artifact .agacha-frente {
+  border-width: 4px;
+  border-color: transparent;
+  background: linear-gradient(#0d0a14, #0d0a14) padding-box,
+    linear-gradient(120deg, #fff6d0, #d9a441, #ffffff, #b061f2, #fff6d0, #d9a441, #ffffff) border-box;
+  background-size: 100% 100%, 300% 100%;
+  animation: agacha-brilho 1.8s 0.4s ease-in-out infinite alternate, agacha-moldura 3.5s linear infinite;
+}
+@keyframes agacha-moldura {
+  from { background-position: 0 0, 0% 0; }
+  to   { background-position: 0 0, 100% 0; }
+}
+
+/* ---------- Mascote em boneco ---------- */
+.agacha-sorteio .com-boneco .agacha-mascote {
+  animation: none;
+  min-height: 290px;
+}
+.agacha-sorteio .com-boneco .agacha-mascote-pulo {
+  inset: 14px 6px 0;
+}
+.agacha-sorteio .agacha-mago.com-boneco.humor-revela::before {
+  inset: 0;
+}
+
+/* ---------- Janela do pool: baralhos ---------- */
+.agacha-pool .agacha-baralhos {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.agacha-pool .agacha-baralhos label {
+  flex: none;
+  font-weight: 700;
+  color: var(--ag-ouro);
+}
+.agacha-pool .agacha-baralhos select {
+  flex: 1;
+}
+.agacha-pool .agacha-baralhos button {
+  flex: 0 0 auto;
+  width: auto;
+  white-space: nowrap;
+}
+.agacha-sorte-config input[name="acumuladaN"] {
+  flex: 0 0 70px;
+  text-align: center;
+}
+.agacha-chat .agacha-chat-pago {
+  margin: 0;
+}
+
+/* ==================================================================
+   Boneco articulado (Mordisco em SVG)
+   Peças: .bn-tudo (o corpo inteiro), .bn-tampa (gira na dobradiça da esquerda), .bn-lingua,
+   .bn-pupila (segue o ponteiro por --ox/--oy), .bn-palpebra (pisca), .bn-perna-e/-d, .bn-cartas.
+   Estados no <svg>: bn-capa, bn-embaralha, bn-revela, e .falando por um instante a cada fala.
+   ================================================================== */
+.agacha-boneco {
+  --ox: 0px;
+  --oy: 0px;
+  --abre: 9deg;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.agacha-boneco * {
+  transform-box: view-box;
+}
+/* corpo inteiro: respira */
+.agacha-boneco .bn-tudo {
+  transform-origin: 150px 300px;
+  animation: bn-respirar 2.8s ease-in-out infinite;
+}
+@keyframes bn-respirar {
+  0%, 100% { transform: translateY(0) scale(1, 1); }
+  50%      { transform: translateY(-3px) scale(1.01, 1.03); }
+}
+.agacha-boneco .bn-sombra {
+  transform-origin: 150px 316px;
+  animation: bn-sombra 2.8s ease-in-out infinite;
+}
+@keyframes bn-sombra {
+  50% { transform: scaleX(0.96); }
+}
+/* tampa: abre e fecha na dobradiça */
+.agacha-boneco .bn-tampa {
+  transform-origin: 40px 146px;
+  transform: rotate(calc(var(--abre) * -1));
+  animation: bn-tampa 2.8s ease-in-out infinite;
+}
+@keyframes bn-tampa {
+  0%, 100% { transform: rotate(calc(var(--abre) * -1)); }
+  50%      { transform: rotate(calc(var(--abre) * -1 - 3deg)); }
+}
+/* olhos: seguem o ponteiro e piscam */
+.agacha-boneco .bn-pupila {
+  transform: translate(var(--ox), var(--oy));
+  transition: transform 0.12s ease-out;
+}
+/* a pálpebra desce a partir do topo do olho */
+.agacha-boneco .bn-palpebra {
+  transform-box: fill-box;
+  transform-origin: 50% 0%;
+  transform: scaleY(0);
+  animation: bn-piscar 4.6s ease-in-out infinite;
+}
+.agacha-boneco .bn-olho:nth-of-type(2) .bn-palpebra {
+  animation-delay: 0.03s;
+}
+@keyframes bn-piscar {
+  0%, 93%, 100% { transform: scaleY(0); }
+  96.5%         { transform: scaleY(1); }
+}
+.agacha-boneco .bn-estrela {
+  opacity: 0;
+}
+/* língua: balança */
+.agacha-boneco .bn-lingua {
+  transform-origin: 140px 144px;
+  animation: bn-lingua 2.2s ease-in-out infinite;
+}
+@keyframes bn-lingua {
+  0%, 100% { transform: rotate(-4deg); }
+  50%      { transform: rotate(7deg); }
+}
+.agacha-boneco .bn-brasa {
+  animation: bn-brasa 1.6s ease-in-out infinite alternate;
+}
+@keyframes bn-brasa {
+  from { opacity: 0.35; }
+  to   { opacity: 0.75; }
+}
+.agacha-boneco .bn-cartas {
+  opacity: 0;
+}
+.agacha-boneco .bn-sobrancelhas path {
+  transition: transform 0.25s ease;
+  transform-origin: 150px 50px;
+}
+
+/* ---------- falando: a tampa bate como boca ---------- */
+.agacha-boneco.falando .bn-tampa {
+  animation: bn-falar 0.26s ease-in-out 5;
+}
+@keyframes bn-falar {
+  0%, 100% { transform: rotate(-4deg); }
+  50%      { transform: rotate(-24deg); }
+}
+.agacha-boneco.falando .bn-tudo {
+  animation: bn-quicar 0.42s ease-out 1;
+}
+@keyframes bn-quicar {
+  0%   { transform: translateY(0) scale(1.04, 0.94); }
+  45%  { transform: translateY(-16px) scale(0.98, 1.05); }
+  100% { transform: translateY(0) scale(1, 1); }
+}
+
+/* ---------- embaralhando: boca aberta, língua girando as cartas ---------- */
+.agacha-boneco.bn-embaralha {
+  --abre: 30deg;
+}
+.agacha-boneco.bn-embaralha .bn-tudo {
+  animation: bn-gingar 0.5s ease-in-out infinite;
+}
+@keyframes bn-gingar {
+  0%, 100% { transform: rotate(-4deg); }
+  50%      { transform: rotate(4deg); }
+}
+.agacha-boneco.bn-embaralha .bn-perna-e { animation: bn-passo 0.5s ease-in-out infinite; }
+.agacha-boneco.bn-embaralha .bn-perna-d { animation: bn-passo 0.5s ease-in-out infinite 0.25s; }
+@keyframes bn-passo {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-10px); }
+}
+.agacha-boneco.bn-embaralha .bn-lingua {
+  animation: bn-lingua-gira 0.36s ease-in-out infinite;
+}
+@keyframes bn-lingua-gira {
+  0%, 100% { transform: rotate(-18deg) scale(1.1); }
+  50%      { transform: rotate(26deg) scale(1.2); }
+}
+.agacha-boneco.bn-embaralha .bn-cartas {
+  opacity: 1;
+}
+.agacha-boneco .bn-carta {
+  transform-origin: 150px 96px;
+}
+.agacha-boneco.bn-embaralha .bn-carta-1 { animation: bn-orbita 0.9s linear infinite; }
+.agacha-boneco.bn-embaralha .bn-carta-2 { animation: bn-orbita 0.9s linear infinite -0.3s; }
+.agacha-boneco.bn-embaralha .bn-carta-3 { animation: bn-orbita 0.9s linear infinite -0.6s; }
+@keyframes bn-orbita {
+  from { transform: translate(150px, 96px) rotate(0deg) translate(74px, 0) rotate(0deg); }
+  to   { transform: translate(150px, 96px) rotate(360deg) translate(74px, 0) rotate(-360deg); }
+}
+.agacha-boneco.bn-embaralha .bn-sob-e { transform: translateY(6px) rotate(8deg); }
+.agacha-boneco.bn-embaralha .bn-sob-d { transform: translateY(-4px) rotate(-6deg); }
+
+/* ---------- carta lendária: pula, boca escancarada, olhos de estrela ---------- */
+.agacha-boneco.bn-revela {
+  --abre: 36deg;
+}
+.agacha-boneco.bn-revela .bn-tudo {
+  animation: bn-pular 0.56s cubic-bezier(0.3, 0, 0.4, 1) infinite;
+}
+@keyframes bn-pular {
+  0%, 100% { transform: translateY(0) scale(1.06, 0.92); }
+  45%      { transform: translateY(-34px) scale(0.96, 1.07); }
+}
+.agacha-boneco.bn-revela .bn-sombra {
+  animation: bn-sombra-pulo 0.56s cubic-bezier(0.3, 0, 0.4, 1) infinite;
+}
+@keyframes bn-sombra-pulo {
+  45% { transform: scaleX(0.7); opacity: 0.2; }
+}
+.agacha-boneco.bn-revela .bn-pupila { opacity: 0; }
+.agacha-boneco.bn-revela .bn-estrela {
+  opacity: 1;
+  transform-origin: 150px 98px;
+  animation: bn-brasa 0.3s ease-in-out infinite alternate;
+}
+.agacha-boneco.bn-revela .bn-brasa {
+  opacity: 1;
+  animation: none;
+  fill: #fff2b0;
+}
+.agacha-boneco.bn-revela .bn-sobrancelhas path { transform: translateY(-9px); }
+.agacha-boneco.bn-revela .bn-lingua {
+  animation: bn-lingua-gira 0.28s ease-in-out infinite;
+}
+
+/* ==================================================================
+   Boneco articulado: emoções, manias e cochilo
+   ================================================================== */
+.agacha-boneco .bn-iris {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 0.18s ease;
+}
+.agacha-boneco .bn-risonho,
+.agacha-boneco .bn-gota,
+.agacha-boneco .bn-zzz,
+.agacha-boneco .bn-fagulhas,
+.agacha-boneco .bn-cuspida {
+  opacity: 0;
+}
+.agacha-boneco .bn-argola-e { transform-origin: 30px 199px; }
+.agacha-boneco .bn-argola-d { transform-origin: 270px 199px; }
+.agacha-boneco .bn-flamula {
+  transform-origin: 150px 164px;
+  animation: bn-flamula 3.4s ease-in-out infinite;
+}
+@keyframes bn-flamula {
+  0%, 100% { transform: skewX(-1.5deg); }
+  50%      { transform: skewX(1.5deg); }
+}
+.agacha-boneco .bn-logo {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: bn-pulsar-estrela 2.2s ease-in-out infinite;
+}
+@keyframes bn-pulsar-estrela {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.12); }
+}
+.agacha-boneco .bn-pe {
+  transform-box: fill-box;
+  transform-origin: 50% 0%;
+}
+
+/* ---------- cuspindo uma carta: a tampa abre num tranco e ele recua ---------- */
+.agacha-boneco.cuspindo .bn-tampa {
+  animation: bn-cuspir-tampa 0.4s ease-out 1;
+}
+@keyframes bn-cuspir-tampa {
+  0%   { transform: rotate(-4deg); }
+  22%  { transform: rotate(-2deg); }    /* toma fôlego */
+  48%  { transform: rotate(-40deg); }   /* cospe */
+  100% { transform: rotate(-10deg); }
+}
+.agacha-boneco.cuspindo .bn-tudo {
+  animation: bn-recuo 0.4s ease-out 1;
+}
+@keyframes bn-recuo {
+  0%   { transform: translate(0, 0) scale(1); }
+  22%  { transform: translate(3px, 2px) scale(1.05, 0.93); }
+  50%  { transform: translate(-8px, -4px) scale(0.97, 1.05); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+.agacha-boneco.cuspindo .bn-cuspida {
+  transform-origin: 150px 120px;
+  animation: bn-cuspida 0.4s ease-out 1;
+}
+@keyframes bn-cuspida {
+  0%, 40% { opacity: 0; transform: translate(150px, 124px) scale(0.5) rotate(0deg); }
+  48%     { opacity: 1; transform: translate(160px, 112px) scale(0.7) rotate(10deg); }
+  100%    { opacity: 0; transform: translate(380px, 40px) scale(1.3) rotate(220deg); }
+}
+
+/* ---------- ansioso: treme, pupilas pequenas, gota de suor ---------- */
+.agacha-boneco.em-ansioso {
+  --abre: 15deg;
+}
+.agacha-boneco.em-ansioso .bn-tudo {
+  animation: bn-tremer 0.09s linear infinite;
+}
+@keyframes bn-tremer {
+  0%   { transform: translate(-1.5px, 0.5px); }
+  50%  { transform: translate(1.5px, -0.5px); }
+  100% { transform: translate(-1.5px, 0.5px); }
+}
+.agacha-boneco.em-ansioso .bn-iris { transform: scale(0.55); }
+.agacha-boneco.em-ansioso .bn-sobrancelhas path { transform: translateY(-9px); }
+.agacha-boneco.em-ansioso .bn-gota {
+  opacity: 1;
+  animation: bn-gota 0.8s ease-in infinite;
+}
+@keyframes bn-gota {
+  0%   { transform: translateY(-6px); opacity: 0; }
+  30%  { opacity: 1; }
+  100% { transform: translateY(26px); opacity: 0; }
+}
+.agacha-boneco.em-ansioso .bn-lingua { animation: none; transform: rotate(0deg) scale(0.9); }
+
+/* ---------- meh (carta comum): olhos caídos e um suspiro ---------- */
+.agacha-boneco.em-meh {
+  --abre: 3deg;
+}
+.agacha-boneco.em-meh .bn-palpebra {
+  animation: none;
+  transform: scaleY(0.52);
+}
+.agacha-boneco.em-meh .bn-sob-e { transform: translateY(8px) rotate(-9deg); }
+.agacha-boneco.em-meh .bn-sob-d { transform: translateY(8px) rotate(9deg); }
+.agacha-boneco.em-meh .bn-tudo {
+  animation: bn-suspiro 1.5s ease-in-out 1;
+}
+@keyframes bn-suspiro {
+  0%, 100% { transform: scale(1, 1); }
+  35%      { transform: scale(0.98, 1.04); }
+  70%      { transform: scale(1.03, 0.94) translateY(3px); }
+}
+
+/* ---------- feliz: olhos sorrindo e três pulinhos ---------- */
+.agacha-boneco.em-feliz {
+  --abre: 19deg;
+}
+.agacha-boneco.em-feliz .bn-risonho { opacity: 1; }
+.agacha-boneco.em-feliz .bn-palpebra { animation: none; transform: scaleY(0); }
+.agacha-boneco.em-feliz .bn-tudo {
+  animation: bn-quicar 0.42s ease-out 3;
+}
+.agacha-boneco.em-feliz .bn-argola-e { animation: bn-argola 0.42s ease-in-out 3; }
+.agacha-boneco.em-feliz .bn-argola-d { animation: bn-argola 0.42s ease-in-out 3 reverse; }
+.agacha-boneco.em-feliz .bn-lingua { animation: bn-lingua-gira 0.3s ease-in-out infinite; }
+
+/* ---------- uau (muito raro, dado alto): susto bom, boca escancarada, fagulhas ---------- */
+.agacha-boneco.em-uau {
+  --abre: 40deg;
+}
+.agacha-boneco.em-uau .bn-iris { transform: scale(0.5); }
+.agacha-boneco.em-uau .bn-sobrancelhas path { transform: translateY(-12px); }
+.agacha-boneco.em-uau .bn-tudo {
+  animation: bn-susto 0.6s cubic-bezier(0.3, 1.5, 0.5, 1) 1;
+}
+@keyframes bn-susto {
+  0%   { transform: translateY(0) scale(1.08, 0.88); }
+  40%  { transform: translateY(-30px) scale(0.94, 1.1); }
+  100% { transform: translateY(0) scale(1, 1); }
+}
+.agacha-boneco.em-uau .bn-fagulhas,
+.agacha-boneco.bn-revela .bn-fagulhas,
+.agacha-boneco.em-feliz .bn-fagulhas {
+  opacity: 1;
+}
+.agacha-boneco .bn-fagulha {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.agacha-boneco.em-uau .bn-fagulha,
+.agacha-boneco.bn-revela .bn-fagulha,
+.agacha-boneco.em-feliz .bn-fagulha {
+  animation: bn-fagulha 0.9s ease-out infinite;
+  animation-delay: calc(var(--k) * -0.15s);
+}
+@keyframes bn-fagulha {
+  0%   { transform: translateY(20px) scale(0.2) rotate(0deg); opacity: 0; }
+  30%  { opacity: 1; }
+  100% { transform: translateY(-58px) scale(1.25) rotate(120deg); opacity: 0; }
+}
+
+/* ---------- guloso (entregou um item): engole e arrota ---------- */
+.agacha-boneco.em-guloso .bn-tampa {
+  animation: bn-mastigar 0.24s ease-in-out 4;
+}
+@keyframes bn-mastigar {
+  0%, 100% { transform: rotate(-2deg); }
+  50%      { transform: rotate(-16deg); }
+}
+.agacha-boneco.em-guloso .bn-risonho { opacity: 1; }
+.agacha-boneco.em-guloso .bn-palpebra { animation: none; transform: scaleY(0); }
+.agacha-boneco.em-guloso .bn-arroto {
+  animation: bn-arroto 0.7s ease-out 1 1s;
+}
+@keyframes bn-arroto {
+  0%   { opacity: 0.9; transform: translateY(0) scale(0.6); }
+  100% { opacity: 0; transform: translateY(-46px) scale(1.5); }
+}
+
+/* ---------- manias de quando está à toa ---------- */
+.agacha-boneco.gesto-olhar .bn-pupila {
+  transition: none;
+  animation: bn-olhar 2.2s ease-in-out 1;
+}
+@keyframes bn-olhar {
+  0%, 100% { transform: translate(0, 0); }
+  20%, 40% { transform: translate(-8px, 1px); }
+  60%, 80% { transform: translate(8px, -2px); }
+}
+.agacha-boneco.gesto-olhar .bn-sob-d { transform: translateY(-6px); }
+.agacha-boneco.gesto-lamber .bn-lingua {
+  animation: bn-lamber 1.5s ease-in-out 1;
+}
+@keyframes bn-lamber {
+  0%, 100% { transform: rotate(0deg) scale(1); }
+  30%      { transform: rotate(-55deg) scale(1.15); }
+  65%      { transform: rotate(50deg) scale(1.15); }
+}
+.agacha-boneco.gesto-bocejo .bn-tampa {
+  animation: bn-bocejo 2.4s ease-in-out 1;
+}
+@keyframes bn-bocejo {
+  0%, 100% { transform: rotate(-9deg); }
+  45%, 65% { transform: rotate(-44deg); }
+}
+.agacha-boneco.gesto-bocejo .bn-palpebra {
+  animation: bn-fechar-olho 2.4s ease-in-out 1;
+}
+@keyframes bn-fechar-olho {
+  0%, 100% { transform: scaleY(0); }
+  35%, 75% { transform: scaleY(0.9); }
+}
+.agacha-boneco.gesto-pezinho .bn-perna-d .bn-pe {
+  animation: bn-pezinho 0.4s ease-in-out 4;
+}
+@keyframes bn-pezinho {
+  0%, 100% { transform: rotate(0deg); }
+  50%      { transform: rotate(-16deg) translateY(-5px); }
+}
+.agacha-boneco.gesto-saltinho .bn-tudo {
+  animation: bn-quicar 0.5s ease-out 1;
+}
+.agacha-boneco.gesto-argolas .bn-argola-e { animation: bn-argola 0.5s ease-in-out 3; }
+.agacha-boneco.gesto-argolas .bn-argola-d { animation: bn-argola 0.5s ease-in-out 3 reverse; }
+@keyframes bn-argola {
+  0%, 100% { transform: rotate(0deg); }
+  30%      { transform: rotate(24deg); }
+  70%      { transform: rotate(-20deg); }
+}
+.agacha-boneco.gesto-argolas .bn-tudo {
+  animation: bn-gingar 0.5s ease-in-out 3;
+}
+
+/* ---------- cochilo: olhos fechados, respiração lenta, zzz ---------- */
+.agacha-boneco.dormindo {
+  --abre: 2deg;
+}
+.agacha-boneco.dormindo .bn-palpebra {
+  animation: none;
+  transform: scaleY(1);
+}
+.agacha-boneco.dormindo .bn-tudo {
+  animation: bn-respirar 5s ease-in-out infinite;
+}
+.agacha-boneco.dormindo .bn-tampa {
+  animation: bn-ronco 5s ease-in-out infinite;
+}
+@keyframes bn-ronco {
+  0%, 100% { transform: rotate(-2deg); }
+  50%      { transform: rotate(-9deg); }
+}
+.agacha-boneco.dormindo .bn-sob-e { transform: translateY(7px) rotate(-6deg); }
+.agacha-boneco.dormindo .bn-sob-d { transform: translateY(7px) rotate(6deg); }
+.agacha-boneco.dormindo .bn-lingua { animation: none; transform: rotate(8deg); }
+.agacha-boneco.dormindo .bn-zzz {
+  opacity: 1;
+}
+.agacha-boneco.dormindo .bn-zzz text {
+  animation: bn-zzz 3s ease-in-out infinite;
+}
+.agacha-boneco.dormindo .bn-zzz text:nth-child(2) { animation-delay: 0.6s; }
+.agacha-boneco.dormindo .bn-zzz text:nth-child(3) { animation-delay: 1.2s; }
+@keyframes bn-zzz {
+  0%   { opacity: 0; transform: translate(-8px, 10px); }
+  40%  { opacity: 1; }
+  100% { opacity: 0; transform: translate(8px, -14px); }
+}
+
+/* Com o boneco não há brilho retangular atrás dele: o clarão dourado da pintura pulava junto com o mascote. */
+.agacha-sorteio .agacha-mago.com-boneco.humor-revela::before {
+  display: none;
+}
+.agacha-sorteio .com-boneco .agacha-mascote,
+.agacha-sorteio .com-boneco .agacha-mascote-pulo {
+  background: none;
+  animation: none;
+}
+/* A garganta gira com a tampa, mas nunca treme nem bate sozinha */
+.agacha-boneco .bn-garganta {
+  pointer-events: none;
+}

@@ -1,0 +1,44 @@
+{
+  "id": "gacha-magic-items",
+  "title": "Arcano Loot & Luck",
+  "description": "Arcano Loot & Luck, by Arcano Lab: draw magic items from a weighted pool with a card reveal the whole table watches. Rarity glow and sounds, import from compendiums, hand items straight to a character. English and Português (Brasil).",
+  "version": "1.1.0",
+  "authors": [
+    {
+      "name": "Arcano Lab",
+      "url": "https://www.patreon.com/arcanolab"
+    }
+  ],
+  "compatibility": {
+    "minimum": "14",
+    "verified": "14"
+  },
+  "relationships": {
+    "recommends": [
+      {
+        "id": "dnd5e",
+        "type": "system",
+        "reason": "Item rarity is read automatically from D&D 5e items."
+      }
+    ]
+  },
+  "socket": true,
+  "esmodules": [
+    "scripts/main.mjs"
+  ],
+  "styles": [
+    "styles/gacha.css"
+  ],
+  "languages": [
+    {
+      "lang": "pt-BR",
+      "name": "Português (Brasil)",
+      "path": "lang/pt-BR.json"
+    },
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    }
+  ]
+}
