@@ -23,6 +23,9 @@ Turn loot into a moment. Build a pool of magic items, press Draw, and the whole 
 - **Sounds** by rarity, can be turned off per user. All sounds were synthesized for this module.
 - **Module language** — follow Foundry, English or Português (Brasil).
 
+## Ready-made NPC: Zarabim and Mordisco
+On D&D 5e the module ships a compendium, **Arcano Loot & Luck: Zarabim e Mordisco**. Open it, click the adventure and import: you get Zarabim Trocafado, a mad gnome fortune-seller, his mimic partner Mordisco (the same Mordisco as the module mascot), both tokens, and a journal with his act, a price list tied to the module's modes, ready lines and story hooks. The texts are in Portuguese.
+
 ## How to use
 1. As GM, press the Arcano Lab button in the scene controls and then the wand (with Arcano Lab Hub active; otherwise the wand is in the token controls), or **Alt + G**.
 2. Open **Configure pool**, import a compendium or drag items in, and save.
@@ -36,6 +39,11 @@ api.sortear(5);     // open and draw 5 cards
 api.configurar();   // open the pool window
 api.pool();         // the saved pool
 ```
+
+## Install
+In Foundry, **Add-on Modules → Install Module**, paste this manifest URL:
+
+`https://github.com/arcanolab/arcano-loot-and-luck/releases/latest/download/module.json`
 
 ## Requirements
 - Foundry VTT v14. Works with any game system; item rarity is read automatically on D&D 5e.

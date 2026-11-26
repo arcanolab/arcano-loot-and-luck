@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.0
+- New compendium "Arcano Loot & Luck: Zarabim e Mordisco" (D&D 5e, Adventure): one click imports Zarabim Trocafado, a mad gnome fortune-seller, his mimic partner Mordisco, their tokens, and a journal with his act, price list, lines and hooks. Texts in Portuguese.
+- Install links in the manifest.
+
 ## 1.1.0
 - Rewritten for Foundry VTT v14 (scene control button, DialogV2, namespaced audio, no jQuery).
 - Arcano Lab look: purple and gold window, card back with the Arcano Lab mark, own icon.

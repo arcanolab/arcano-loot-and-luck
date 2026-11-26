@@ -1,0 +1,5 @@
+packs/** binary
+*.webp binary
+*.ogg binary
+*.wav binary
+*.mp3 binary
